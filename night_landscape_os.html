@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Landscape - A New World Beyond Your Screen</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        night: {
+                            950: '#030712',
+                            900: '#0a0f1d',
+                            800: '#111827',
+                            700: '#1f2937',
+                            600: '#374151',
+                        },
+                        neon: {
+                            blue: '#00f0ff',
+                            purple: '#8b5cf6',
+                            cyan: '#38bdf8',
+                            glow: 'rgba(0, 240, 255, 0.4)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 15, 29, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 240, 255, 0.6);
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(11, 18, 33, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-taskbar {
+            background: rgba(7, 11, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .neon-border {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+        
+        .neon-border:focus, .neon-border:hover {
+            border-color: #00f0ff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Wallpaper Backgrounds */
+        .bg-wallpaper-1 {
+            background: linear-gradient(135deg, #030712 0%, #0c1427 40%, #1e1b4b 100%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+        }
+        .bg-wallpaper-2 {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #0f766e 100%),
+                        radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.2) 0%, transparent 50%);
+        }
+        .bg-wallpaper-3 {
+            background: linear-gradient(135deg, #09090b 0%, #18181b 50%, #3b0764 100%),
+                        radial-gradient(circle at 70% 70%, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
+        }
+
+        /* Window animations */
+        @keyframes windowOpen {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .animate-window {
+            animation: windowOpen 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Scanline effect for terminal / futuristic vibes */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="h-full overflow-hidden bg-night-950 text-slate-100 font-sans select-none relative">
+
+    <!-- BOOT / LOADING SCREEN -->
+    <div id="boot-screen" class="fixed inset-0 z-50 bg-night-950 flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="relative mb-8">
+            <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-neon-blue to-neon-purple p-0.5 animate-pulse">
+                <div class="w-full h-full bg-night-950 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-moon text-4xl text-neon-blue neon-text"></i>
+                </div>
+            </div>
+            <div class="absolute -inset-4 bg-neon-blue/20 blur-xl rounded-full -z-10 animate-ping"></div>
+        </div>
+        <h1 class="text-3xl font-bold tracking-widest text-white mb-2 font-mono">NIGHT LANDSCAPE</h1>
+        <p class="text-xs text-neon-blue tracking-widest uppercase mb-8">A New World Beyond Your Screen</p>
+        <div class="w-64 h-1.5 bg-night-800 rounded-full overflow-hidden relative border border-neon-blue/30">
+            <div id="boot-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-neon-blue to-neon-purple w-0 transition-all duration-300"></div>
+        </div>
+        <div id="boot-status" class="text-xs text-slate-400 mt-3 font-mono">Sistem çekirdeği yükleniyor...</div>
+    </div>
+
+    <!-- LOCK SCREEN -->
+    <div id="lock-screen" class="fixed inset-0 z-40 bg-wallpaper-1 bg-cover bg-center flex flex-col items-center justify-between py-16 px-4 hidden transition-all duration-500">
+        <div class="absolute inset-0 bg-night-950/60 backdrop-blur-sm"></div>
+        
+        <!-- Top Clock -->
+        <div class="relative z-10 text-center mt-8">
+            <div id="lock-time" class="text-7xl font-light tracking-tight text-white mb-2 font-mono">00:00</div>
+            <div id="lock-date" class="text-lg text-neon-blue font-medium tracking-wide">Pazartesi, 14 Kasım</div>
+        </div>
+
+        <!-- Center Login Box -->
+        <div class="relative z-10 glass-panel p-8 rounded-3xl w-full max-w-sm flex flex-col items-center border border-neon-blue/30 shadow-2xl">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 border-2 border-neon-blue flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                <i class="fa-solid fa-user-astronaut text-3xl text-neon-blue"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white mb-1">Gezgin</h2>
+            <p class="text-xs text-slate-400 mb-6">Night Landscape Oturumu</p>
+            
+            <form id="login-form" class="w-full space-y-4">
+                <div class="relative">
+                    <input type="password" id="login-pass" placeholder="Şifre (Boş bırakabilirsin)" class="w-full bg-night-900/80 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neon-blue transition-colors pr-10">
+                    <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-neon-blue hover:text-white transition-colors">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-neon-blue to-neon-purple text-night-950 font-bold rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.4)] hover:brightness-110 transition-all text-sm uppercase tracking-wider">
+                    Sisteme Giriş Yap
+                </button>
+            </form>
+        </div>
+
+        <!-- Bottom Quick Info -->
+        <div class="relative z-10 flex items-center space-x-6 text-slate-400 text-sm">
+            <div class="flex items-center space-x-2"><i class="fa-solid fa-wifi text-neon-blue"></i> <span>Bağlı</span></div>
+            <div class="flex items-center space-x-2"><i class="fa-solid fa-battery-three-quarters text-neon-blue"></i> <span>%94</span></div>
+            <div class="flex items-center space-x-2"><i class="fa-solid fa-shield-halved text-neon-blue"></i> <span>Güvenli</span></div>
+        </div>
+    </div>
+
+    <!-- MAIN DESKTOP ENVIRONMENT -->
+    <div id="desktop" class="absolute inset-0 bg-wallpaper-1 bg-cover bg-center overflow-hidden flex flex-col justify-between hidden">
+
+        <!-- DESKTOP ICONS GRID -->
+        <div id="desktop-icons" class="absolute inset-0 p-6 grid grid-flow-col grid-rows-6 gap-6 items-start justify-start z-0 overflow-hidden">
+            <!-- Rendered via JS -->
+        </div>
+
+        <!-- WINDOWS LAYER -->
+        <div id="windows-container" class="absolute inset-0 pb-16 pointer-events-none z-10 overflow-hidden">
+            <!-- Rendered via JS -->
+        </div>
+
+        <!-- NOTIFICATION CENTER DRAWER -->
+        <div id="notification-center" class="absolute top-14 right-4 w-80 glass-panel rounded-2xl p-4 z-40 transform translate-x-96 transition-transform duration-300 shadow-2xl border border-neon-blue/30">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+                <h3 class="font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-bell text-neon-blue"></i> Bildirim Merkezi</h3>
+                <button onclick="clearNotifications()" class="text-xs text-slate-400 hover:text-neon-blue transition-colors">Tümünü Temizle</button>
+            </div>
+            <div id="notifications-list" class="space-y-2 max-h-80 overflow-y-auto pr-1">
+                <!-- Notifications populated here -->
+            </div>
+        </div>
+
+        <!-- START MENU -->
+        <div id="start-menu" class="absolute bottom-16 left-3 w-80 md:w-96 glass-panel rounded-2xl p-4 z-40 transform scale-95 opacity-0 pointer-events-none transition-all duration-200 shadow-2xl border border-neon-blue/30 flex flex-col">
+            <!-- Search bar -->
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" id="start-search" placeholder="Uygulama veya dosya ara..." class="w-full bg-night-900/90 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neon-blue">
+            </div>
+
+            <!-- Pinned Apps -->
+            <div class="mb-4">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">Sabitlenen Uygulamalar</span>
+                <div id="start-pinned-apps" class="grid grid-cols-4 gap-3 text-center">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Recent Items / Quick Actions -->
+            <div class="mb-4 flex-1">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">Önerilenler</span>
+                <div id="start-recent" class="space-y-1">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- User Profile / Footer -->
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-full bg-neon-blue/20 border border-neon-blue flex items-center justify-center text-neon-blue">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-white">Gezgin</div>
+                        <div class="text-[10px] text-neon-blue">Aktivite: Çevrimiçi</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="lockSystem()" title="Kilitle" class="w-9 h-9 rounded-xl bg-night-900/80 hover:bg-night-800 text-slate-300 hover:text-neon-blue flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-lock"></i>
+                    </button>
+                    <button onclick="shutdownSystem()" title="Yeniden Başlat / Kapat" class="w-9 h-9 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTEXT MENU -->
+        <div id="context-menu" class="absolute hidden z-50 glass-panel rounded-xl py-1.5 w-48 shadow-2xl border border-neon-blue/20 text-xs">
+            <button onclick="openApp('settings')" class="w-full text-left px-4 py-2 hover:bg-neon-blue/10 flex items-center space-x-2 text-slate-200 transition-colors"><i class="fa-solid fa-palette text-neon-blue w-5"></i><span>Kişiselleştir</span></button>
+            <button onclick="createDesktopItemPrompt('folder')" class="w-full text-left px-4 py-2 hover:bg-neon-blue/10 flex items-center space-x-2 text-slate-200 transition-colors"><i class="fa-solid fa-folder-plus text-neon-blue w-5"></i><span>Yeni Klasör</span></button>
+            <button onclick="createDesktopItemPrompt('file')" class="w-full text-left px-4 py-2 hover:bg-neon-blue/10 flex items-center space-x-2 text-slate-200 transition-colors"><i class="fa-solid fa-file-circle-plus text-neon-blue w-5"></i><span>Yeni Not Dosyası</span></button>
+            <div class="my-1 border-t border-slate-800"></div>
+            <button onclick="refreshDesktop()" class="w-full text-left px-4 py-2 hover:bg-neon-blue/10 flex items-center space-x-2 text-slate-200 transition-colors"><i class="fa-solid fa-rotate text-neon-blue w-5"></i><span>Masaüstünü Yenile</span></button>
+            <button onclick="openApp('terminal')" class="w-full text-left px-4 py-2 hover:bg-neon-blue/10 flex items-center space-x-2 text-slate-200 transition-colors"><i class="fa-solid fa-terminal text-neon-blue w-5"></i><span>Terminali Aç</span></button>
+            <div class="my-1 border-t border-slate-800"></div>
+            <button onclick="openApp('system')" class="w-full text-left px-4 py-2 hover:bg-neon-blue/10 flex items-center space-x-2 text-slate-200 transition-colors"><i class="fa-solid fa-circle-info text-neon-blue w-5"></i><span>Sistem Bilgisi</span></button>
+        </div>
+
+        <!-- TASKBAR -->
+        <div class="glass-taskbar h-14 px-3 flex items-center justify-between z-30 relative select-none">
+            <!-- Left: Start & Pinned Taskbar Apps -->
+            <div class="flex items-center space-x-1.5 h-full">
+                <!-- Start Button -->
+                <button id="start-btn" onclick="toggleStartMenu()" class="h-10 px-3 rounded-xl bg-night-900/60 hover:bg-neon-blue/20 border border-neon-blue/30 flex items-center space-x-2.5 transition-all group shadow-[0_0_10px_rgba(0,240,255,0.15)]">
+                    <i class="fa-solid fa-moon text-neon-blue text-lg group-hover:rotate-12 transition-transform"></i>
+                    <span class="text-xs font-bold tracking-wider text-white hidden sm:inline font-mono">NIGHT</span>
+                </button>
+
+                <div class="h-6 w-px bg-slate-800 mx-1"></div>
+
+                <!-- Active Taskbar Icons -->
+                <div id="taskbar-apps" class="flex items-center space-x-1.5">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Center: Active Windows / Minimalist Widget -->
+            <div class="hidden lg:flex items-center space-x-2 px-3 py-1 rounded-xl bg-night-900/40 border border-slate-800 text-xs text-slate-400">
+                <i class="fa-solid fa-cloud-moon text-neon-blue"></i>
+                <span id="taskbar-weather">İstanbul 16°C • Gece</span>
+            </div>
+
+            <!-- Right: System Tray & Clock -->
+            <div class="flex items-center space-x-2 h-full">
+                <!-- Quick Tray Buttons -->
+                <button onclick="toggleNotificationCenter()" class="h-9 px-2.5 rounded-lg hover:bg-slate-800/60 text-slate-300 hover:text-neon-blue flex items-center space-x-2 transition-colors relative">
+                    <i class="fa-solid fa-bell text-sm"></i>
+                    <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 rounded-full bg-neon-blue hidden"></span>
+                </button>
+
+                <button onclick="openApp('settings')" class="h-9 px-2.5 rounded-lg hover:bg-slate-800/60 text-slate-300 hover:text-neon-blue flex items-center space-x-2 transition-colors hidden sm:flex">
+                    <i class="fa-solid fa-volume-high text-sm"></i>
+                </button>
+
+                <div class="h-5 w-px bg-slate-800 mx-1"></div>
+
+                <!-- Clock & Date Widget -->
+                <button onclick="toggleCalendarWidget()" class="h-10 px-3 rounded-xl hover:bg-slate-800/60 flex flex-col items-end justify-center transition-colors">
+                    <div id="taskbar-time" class="text-xs font-semibold text-white font-mono">00:00</div>
+                    <div id="taskbar-date" class="text-[10px] text-slate-400">14.11.2026</div>
+                </button>
+
+                <!-- Desktop Show/Hide trigger at far right -->
+                <button onclick="minimizeAllWindows()" title="Masaüstünü Göster" class="w-1.5 h-full hover:bg-neon-blue/40 transition-colors ml-1 rounded-r"></button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL ALERT / PROMPT DIALOG (Custom, replacing alert/confirm) -->
+    <div id="modal-dialog" class="fixed inset-0 z-50 bg-night-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-md border border-neon-blue/40 shadow-2xl animate-window">
+            <h3 id="modal-title" class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-neon-blue"></i> <span>Bildirim</span>
+            </h3>
+            <p id="modal-message" class="text-sm text-slate-300 mb-6 leading-relaxed">İçerik mesajı buraya gelecek.</p>
+            <div id="modal-input-container" class="mb-6 hidden">
+                <input type="text" id="modal-input" class="w-full bg-night-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-neon-blue">
+            </div>
+            <div class="flex items-center justify-end space-x-3" id="modal-buttons">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT ENGINE -->
+    <script>
+        /* ==========================================================================
+           1. STATE & LOCALSTORAGE MANAGEMENT
+           ========================================================================== */
+        const STORAGE_KEY_SETTINGS = 'night_landscape_settings_v1';
+        const STORAGE_KEY_FILES = 'night_landscape_files_v1';
+
+        let state = {
+            settings: {
+                wallpaper: 'bg-wallpaper-1',
+                themeColor: '#00f0ff',
+                volume: 80,
+                soundEnabled: true,
+                timeFormat24: true
+            },
+            files: [
+                { id: 'f1', name: 'Belgeler', type: 'folder', parent: 'root', content: '' },
+                { id: 'f2', name: 'Müzikler', type: 'folder', parent: 'root', content: '' },
+                { id: 'f3', name: 'Görseller', type: 'folder', parent: 'root', content: '' },
+                { id: 'f4', name: 'Hosgeldiniz.txt', type: 'file', parent: 'root', content: 'Night Landscape v1.0.0 OS Simülasyonuna hoş geldiniz!\n\nBu sistem tarayıcınızda tamamen istemci tarafında (LocalStorage) çalışmaktadır.\n\nÖzellikler:\n- Gelişmiş pencere yöneticisi\n- Dosya yöneticisi ve yerel depolama\n- Terminal arabirimi (yardım için "help" yazın)\n- Müzik oynatıcı, Not defteri, Hesap makinesi, Tarayıcı ve Ayarlar\n\nKeyifli keşifler dileriz!' },
+                { id: 'f5', name: 'SistemNotu.txt', type: 'file', parent: 'f1', content: 'Notlar:\n1. Masaüstü simgelerini sürükleyip bırakabilirsiniz.\n2. Sağ tıklayarak yeni klasör/dosya oluşturabilirsiniz.' }
+            ],
+            windows: [], // Active windows list
+            activeWindowId: null,
+            zIndexCounter: 100,
+            notifications: [
+                { id: 1, title: 'Sistem Başlatıldı', text: 'Night Landscape başarıyla yüklendi.', time: 'Az önce', icon: 'fa-moon' },
+                { id: 2, title: 'Güvenlik Duvarı', text: 'Ağ bağlantınız şifrelendi ve koruma altında.', time: '2 dk önce', icon: 'fa-shield-halved' }
+            ],
+            audioPlayer: {
+                isPlaying: false,
+                currentTrack: null,
+                currentTime: 0,
+                duration: 0,
+                playlist: [
+                    { title: 'Neon Cyberpunk Ambient', artist: 'Nightscape Synth', duration: '3:45', url: 'https://actions.google.com/sounds/v1/ambiences/night_train.ogg' },
+                    { title: 'Digital Rain Lofi', artist: 'Cyber Droid', duration: '2:30', url: 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg' },
+                    { title: 'Cosmic Starfield', artist: 'Astral Echo', duration: '4:10', url: 'https://actions.google.com/sounds/v1/science_fiction/scifi_hum.ogg' }
+                ]
+            }
+        };
+
+        function loadStorage() {
+            try {
+                const savedSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
+                if (savedSettings) state.settings = JSON.parse(savedSettings);
+
+                const savedFiles = localStorage.getItem(STORAGE_KEY_FILES);
+                if (savedFiles) state.files = JSON.parse(savedFiles);
+            } catch(e) {
+                console.error('Storage load error:', e);
+            }
+        }
+
+        function saveStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(state.settings));
+                localStorage.setItem(STORAGE_KEY_FILES, JSON.stringify(state.files));
+            } catch(e) {
+                console.error('Storage save error:', e);
+            }
+        }
+
+        /* ==========================================================================
+           2. APP DEFINITIONS & REGISTRY
+           ========================================================================== */
+        const APPS_REGISTRY = {
+            explorer: { title: 'Dosya Yöneticisi', icon: 'fa-folder-open', w: 750, h: 500, render: renderExplorerApp },
+            notepad: { title: 'Not Defteri', icon: 'fa-note-sticky', w: 600, h: 420, render: renderNotepadApp },
+            terminal: { title: 'Terminal', icon: 'fa-terminal', w: 650, h: 400, render: renderTerminalApp },
+            calculator: { title: 'Hesap Makinesi', icon: 'fa-calculator', w: 320, h: 460, render: renderCalculatorApp },
+            music: { title: 'Müzik Oynatıcı', icon: 'fa-music', w: 500, h: 400, render: renderMusicApp },
+            browser: { title: 'Web Tarayıcı', icon: 'fa-globe', w: 800, h: 520, render: renderBrowserApp },
+            calendar: { title: 'Takvim', icon: 'fa-calendar-days', w: 450, h: 420, render: renderCalendarApp },
+            settings: { title: 'Sistem Ayarları', icon: 'fa-gear', w: 650, h: 480, render: renderSettingsApp },
+            system: { title: 'Sistem Bilgisi', icon: 'fa-circle-info', w: 500, h: 400, render: renderSystemApp }
+        };
+
+        const PINNED_APPS = ['explorer', 'browser', 'notepad', 'music', 'terminal', 'calculator', 'calendar', 'settings'];
+
+        /* ==========================================================================
+           3. BOOT & SYSTEM INIT
+           ========================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStorage();
+            applySettings();
+            initBootSequence();
+            initClock();
+            initEventListeners();
+        });
+
+        function initBootSequence() {
+            const bootScreen = document.getElementById('boot-screen');
+            const bootProgress = document.getElementById('boot-progress');
+            const bootStatus = document.getElementById('boot-status');
+            const lockScreen = document.getElementById('lock-screen');
+
+            const steps = [
+                { p: 20, text: 'Sistem bileşenleri yükleniyor...' },
+                { p: 45, text: 'Grafik motoru başlatılıyor...' },
+                { p: 70, text: 'LocalStorage veritabanı senkronize ediliyor...' },
+                { p: 95, text: 'Masaüstü ortamı hazırlanıyor...' },
+                { p: 100, text: 'Hazır!' }
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < steps.length) {
+                    bootProgress.style.width = steps[i].p + '%';
+                    bootStatus.textContent = steps[i].text;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        bootScreen.classList.add('opacity-0');
+                        setTimeout(() => {
+                            bootScreen.style.display = 'none';
+                            lockScreen.classList.remove('hidden');
+                        }, 700);
+                    }, 400);
+                }
+            }, 350);
+        }
+
+        function unlockSystem(e) {
+            if(e) e.preventDefault();
+            const lockScreen = document.getElementById('lock-screen');
+            const desktop = document.getElementById('desktop');
+
+            lockScreen.classList.add('opacity-0');
+            setTimeout(() => {
+                lockScreen.classList.add('hidden');
+                desktop.classList.remove('hidden');
+                renderDesktopIcons();
+                renderStartMenu();
+                addNotification('Oturum Açıldı', 'Night Landscape masaüstüne hoş geldiniz.', 'fa-user-check');
+            }, 500);
+        }
+
+        document.getElementById('login-form').addEventListener('submit', unlockSystem);
+
+        function lockSystem() {
+            const lockScreen = document.getElementById('lock-screen');
+            const desktop = document.getElementById('desktop');
+            lockScreen.classList.remove('hidden', 'opacity-0');
+            desktop.classList.add('hidden');
+            toggleStartMenu(true);
+        }
+
+        function shutdownSystem() {
+            showModal('Sistemi Kapat / Yeniden Başlat', 'NIGHT LANDSCAPE oturumunu kapatmak veya sistemi yeniden başlatmak istiyor musunuz?', [
+                { text: 'İptal', class: 'bg-slate-700 hover:bg-slate-600 text-white', onclick: 'closeModal()' },
+                { text: 'Yeniden Başlat', class: 'bg-gradient-to-r from-neon-blue to-neon-purple text-night-950 font-bold hover:brightness-110', onclick: 'location.reload()' }
+            ]);
+        }
+
+        /* ==========================================================================
+           4. CLOCK & TIME WIDGETS
+           ========================================================================== */
+        function initClock() {
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}`;
+
+            const options = { day: 'numeric', month: 'long', weekday: 'long' };
+            const dateStr = now.toLocaleDateString('tr-TR', options);
+            const shortDateStr = now.toLocaleDateString('tr-TR');
+
+            // Taskbar
+            const tbTime = document.getElementById('taskbar-time');
+            const tbDate = document.getElementById('taskbar-date');
+            if(tbTime) tbTime.textContent = timeStr;
+            if(tbDate) tbDate.textContent = shortDateStr;
+
+            // Lock screen
+            const lockTime = document.getElementById('lock-time');
+            const lockDate = document.getElementById('lock-date');
+            if(lockTime) lockTime.textContent = timeStr;
+            if(lockDate) lockDate.textContent = dateStr;
+        }
+
+        /* ==========================================================================
+           5. EVENT LISTENERS & DESKTOP INTERACTIONS
+           ========================================================================== */
+        function initEventListeners() {
+            // Context menu handler
+            const desktop = document.getElementById('desktop');
+            const contextMenu = document.getElementById('context-menu');
+
+            desktop.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                if(e.target.closest('#windows-container') || e.target.closest('.glass-taskbar')) return;
+                
+                contextMenu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
+                contextMenu.style.top = Math.min(e.clientY, window.innerHeight - 220) + 'px';
+                contextMenu.classList.remove('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if(!e.target.closest('#context-menu')) {
+                    contextMenu.classList.add('hidden');
+                }
+                if(!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+                    toggleStartMenu(true);
+                }
+                if(!e.target.closest('#notification-center') && !e.target.closest('button[onclick="toggleNotificationCenter()"]')) {
+                    document.getElementById('notification-center').classList.add('translate-x-96');
+                }
+            });
+        }
+
+        function refreshDesktop() {
+            document.getElementById('context-menu').classList.add('hidden');
+            renderDesktopIcons();
+            addNotification('Masaüstü', 'Masaüstü simgeleri yenilendi.', 'fa-rotate');
+        }
+
+        /* ==========================================================================
+           6. DESKTOP ICONS & RENDERING
+           ========================================================================== */
+        function renderDesktopIcons() {
+            const container = document.getElementById('desktop-icons');
+            container.innerHTML = '';
+
+            // Default desktop shortcuts + user files in root
+            const desktopApps = [
+                { id: 'explorer', name: 'Dosya Yöneticisi', icon: 'fa-folder-open text-amber-400' },
+                { id: 'browser', name: 'Web Tarayıcı', icon: 'fa-globe text-neon-blue' },
+                { id: 'music', name: 'Müzik Oynatıcı', icon: 'fa-music text-pink-500' },
+                { id: 'notepad', name: 'Not Defteri', icon: 'fa-note-sticky text-yellow-400' },
+                { id: 'terminal', name: 'Terminal', icon: 'fa-terminal text-emerald-400' },
+                { id: 'calculator', name: 'Hesap Makinesi', icon: 'fa-calculator text-blue-400' },
+                { id: 'calendar', name: 'Takvim', icon: 'fa-calendar-days text-purple-400' },
+                { id: 'settings', name: 'Sistem Ayarları', icon: 'fa-gear text-slate-300' },
+                { id: 'system', name: 'Sistem Bilgisi', icon: 'fa-circle-info text-cyan-400' }
+            ];
+
+            desktopApps.forEach(app => {
+                const el = document.createElement('div');
+                el.className = 'w-24 p-2 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group text-center';
+                el.ondblclick = () => openApp(app.id);
+                el.innerHTML = `
+                    <div class="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center text-2xl mb-1.5 group-hover:scale-110 group-hover:border-neon-blue transition-all shadow-lg">
+                        <i class="fa-solid ${app.icon}"></i>
+                    </div>
+                    <span class="text-xs font-medium text-slate-200 drop-shadow line-clamp-2">${app.name}</span>
+                `;
+                container.appendChild(el);
+            });
+
+            // Render root files from storage
+            const rootFiles = state.files.filter(f => f.parent === 'root');
+            rootFiles.forEach(file => {
+                const el = document.createElement('div');
+                el.className = 'w-24 p-2 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group text-center';
+                el.ondblclick = () => {
+                    if(file.type === 'folder') openApp('explorer', { folderId: file.id });
+                    else openApp('notepad', { fileId: file.id });
+                };
+                const iconClass = file.type === 'folder' ? 'fa-folder text-amber-300' : 'fa-file-lines text-slate-300';
+                el.innerHTML = `
+                    <div class="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center text-2xl mb-1.5 group-hover:scale-110 group-hover:border-neon-blue transition-all shadow-lg">
+                        <i class="fa-solid ${iconClass}"></i>
+                    </div>
+                    <span class="text-xs font-medium text-slate-200 drop-shadow line-clamp-2">${file.name}</span>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        /* ==========================================================================
+           7. START MENU & TASKBAR LOGIC
+           ========================================================================== */
+        function toggleStartMenu(forceClose = false) {
+            const menu = document.getElementById('start-menu');
+            if (forceClose || !menu.classList.contains('opacity-0')) {
+                menu.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            } else {
+                menu.classList.remove('scale-95', 'opacity-0', 'pointer-events-none');
+                renderStartMenu();
+            }
+        }
+
+        function renderStartMenu() {
+            // Pinned apps grid
+            const pinnedContainer = document.getElementById('start-pinned-apps');
+            pinnedContainer.innerHTML = '';
+            PINNED_APPS.forEach(appKey => {
+                const app = APPS_REGISTRY[appKey];
+                if(!app) return;
+                const btn = document.createElement('button');
+                btn.className = 'p-2 rounded-xl hover:bg-white/10 flex flex-col items-center justify-center transition-colors group';
+                btn.onclick = () => { openApp(appKey); toggleStartMenu(true); };
+                btn.innerHTML = `
+                    <div class="w-11 h-11 rounded-xl glass-panel flex items-center justify-center text-xl mb-1 group-hover:border-neon-blue transition-colors">
+                        <i class="fa-solid ${app.icon} text-neon-blue"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-300 truncate w-full">${app.title}</span>
+                `;
+                pinnedContainer.appendChild(btn);
+            });
+
+            // Recent items
+            const recentContainer = document.getElementById('start-recent');
+            recentContainer.innerHTML = '';
+            state.files.slice(0, 3).forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors';
+                item.onclick = () => {
+                    if(file.type === 'folder') openApp('explorer', { folderId: file.id });
+                    else openApp('notepad', { fileId: file.id });
+                    toggleStartMenu(true);
+                };
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <i class="fa-solid ${file.type === 'folder' ? 'fa-folder text-amber-400' : 'fa-file-lines text-slate-400'} text-sm"></i>
+                        <span class="text-xs text-slate-200">${file.name}</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500">Son Dosya</span>
+                `;
+                recentContainer.appendChild(item);
+            });
+        }
+
+        function toggleNotificationCenter() {
+            const nc = document.getElementById('notification-center');
+            nc.classList.toggle('translate-x-96');
+            document.getElementById('notif-badge').classList.add('hidden');
+        }
+
+        function addNotification(title, text, icon = 'fa-bell') {
+            state.notifications.unshift({ id: Date.now(), title, text, time: 'Şimdi', icon });
+            renderNotifications();
+            document.getElementById('notif-badge').classList.remove('hidden');
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notifications-list');
+            list.innerHTML = '';
+            state.notifications.forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'p-3 rounded-xl bg-night-900/60 border border-slate-800 flex items-start space-x-3';
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-lg bg-neon-blue/10 text-neon-blue flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid ${n.icon} text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <span class="text-xs font-bold text-white truncate">${n.title}</span>
+                            <span class="text-[10px] text-slate-500">${n.time}</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">${n.text}</p>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function clearNotifications() {
+            state.notifications = [];
+            renderNotifications();
+        }
+
+        function toggleCalendarWidget() {
+            openApp('calendar');
+        }
+
+        /* ==========================================================================
+           8. ADVANCED WINDOW MANAGEMENT SYSTEM
+           ========================================================================== */
+        function openApp(appKey, meta = null) {
+            const appDef = APPS_REGISTRY[appKey];
+            if(!appDef) return;
+
+            // Check if window already open for single-instance apps (or allow multi)
+            const existingWin = state.windows.find(w => w.appKey === appKey && !meta);
+            if(existingWin) {
+                focusWindow(existingWin.id);
+                if(existingWin.minimized) restoreWindow(existingWin.id);
+                return;
+            }
+
+            const winId = 'win_' + Date.now() + Math.floor(Math.random()*1000);
+            state.zIndexCounter++;
+
+            const newWin = {
+                id: winId,
+                appKey: appKey,
+                title: appDef.title,
+                icon: appDef.icon,
+                x: Math.max(50, (window.innerWidth - appDef.w) / 2 + (state.windows.length * 20)),
+                y: Math.max(50, (window.innerHeight - appDef.h) / 2 + (state.windows.length * 20)),
+                w: appDef.w,
+                h: appDef.h,
+                minimized: false,
+                maximized: false,
+                zIndex: state.zIndexCounter,
+                meta: meta
+            };
+
+            state.windows.push(newWin);
+            state.activeWindowId = winId;
+            renderWindows();
+            renderTaskbarApps();
+        }
+
+        function closeWindow(winId) {
+            state.windows = state.windows.filter(w => w.id !== winId);
+            renderWindows();
+            renderTaskbarApps();
+        }
+
+        function minimizeWindow(winId) {
+            const win = state.windows.find(w => w.id === winId);
+            if(win) {
+                win.minimized = true;
+                renderWindows();
+                renderTaskbarApps();
+            }
+        }
+
+        function restoreWindow(winId) {
+            const win = state.windows.find(w => w.id === winId);
+            if(win) {
+                win.minimized = false;
+                focusWindow(winId);
+            }
+        }
+
+        function toggleMaximizeWindow(winId) {
+            const win = state.windows.find(w => w.id === winId);
+            if(win) {
+                win.maximized = !win.maximized;
+                focusWindow(winId);
+            }
+        }
+
+        function focusWindow(winId) {
+            state.zIndexCounter++;
+            const win = state.windows.find(w => w.id === winId);
+            if(win) {
+                win.zIndex = state.zIndexCounter;
+                win.minimized = false;
+                state.activeWindowId = winId;
+                renderWindows();
+                renderTaskbarApps();
+            }
+        }
+
+        function renderTaskbarApps() {
+            const container = document.getElementById('taskbar-apps');
+            container.innerHTML = '';
+
+            // Unique active app keys or all window instances
+            state.windows.forEach(win => {
+                const isActive = state.activeWindowId === win.id && !win.minimized;
+                const btn = document.createElement('button');
+                btn.className = `h-10 px-3 rounded-xl flex items-center space-x-2 transition-all group pointer-events-auto ${isActive ? 'bg-neon-blue/20 border border-neon-blue/50 shadow-[0_0_10px_rgba(0,240,255,0.2)]' : 'bg-night-900/60 hover:bg-slate-800/80 border border-slate-800'}`;
+                btn.onclick = () => {
+                    if(win.minimized) restoreWindow(win.id);
+                    else if(state.activeWindowId === win.id) minimizeWindow(win.id);
+                    else focusWindow(win.id);
+                };
+                btn.innerHTML = `
+                    <i class="fa-solid ${win.icon} text-neon-blue text-sm"></i>
+                    <span class="text-xs text-slate-200 font-medium truncate max-w-[100px] hidden md:inline">${win.title}</span>
+                    <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-neon-blue' : 'bg-slate-600'}"></span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function minimizeAllWindows() {
+            state.windows.forEach(w => w.minimized = true);
+            renderWindows();
+            renderTaskbarApps();
+        }
+
+        function renderWindows() {
+            const container = document.getElementById('windows-container');
+            container.innerHTML = '';
+
+            state.windows.forEach(win => {
+                if(win.minimized) return;
+
+                const winEl = document.createElement('div');
+                winEl.id = win.id;
+                winEl.className = `absolute glass-panel rounded-2xl flex flex-col pointer-events-auto overflow-hidden shadow-2xl border border-neon-blue/30 animate-window ${win.maximized ? 'inset-x-2 inset-y-2 !w-auto !h-auto' : ''}`;
+                winEl.style.left = win.x + 'px';
+                winEl.style.top = win.y + 'px';
+                winEl.style.width = win.w + 'px';
+                winEl.style.height = win.h + 'px';
+                winEl.style.zIndex = win.zIndex;
+
+                winEl.onmousedown = () => focusWindow(win.id);
+
+                // Window Header
+                const header = document.createElement('div');
+                header.className = 'h-11 bg-night-900/80 border-b border-slate-800 px-4 flex items-center justify-between cursor-grab active:cursor-grabbing';
+                header.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <i class="fa-solid ${win.icon} text-neon-blue text-sm"></i>
+                        <span class="text-xs font-bold text-white tracking-wide">${win.title}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="minimizeWindow('${win.id}')" class="w-7 h-7 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-minus text-xs"></i></button>
+                        <button onclick="toggleMaximizeWindow('${win.id}')" class="w-7 h-7 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-expand text-xs"></i></button>
+                        <button onclick="closeWindow('${win.id}')" class="w-7 h-7 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-xs"></i></button>
+                    </div>
+                `;
+
+                // Dragging Logic
+                header.onmousedown = (e) => {
+                    if(e.target.closest('button') || win.maximized) return;
+                    focusWindow(win.id);
+                    let startX = e.clientX - win.x;
+                    let startY = e.clientY - win.y;
+
+                    function onMouseMove(ev) {
+                        win.x = Math.max(0, Math.min(window.innerWidth - 100, ev.clientX - startX));
+                        win.y = Math.max(0, Math.min(window.innerHeight - 150, ev.clientY - startY));
+                        winEl.style.left = win.x + 'px';
+                        winEl.style.top = win.y + 'px';
+                    }
+
+                    function onMouseUp() {
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    }
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                };
+
+                winEl.appendChild(header);
+
+                // Window Body Content Container
+                const body = document.createElement('div');
+                body.className = 'flex-1 overflow-auto p-4 relative flex flex-col bg-night-950/40';
+                
+                // Render specific app content
+                const appRenderer = APPS_REGISTRY[win.appKey]?.render;
+                if(appRenderer) {
+                    appRenderer(body, win);
+                }
+
+                winEl.appendChild(body);
+                container.appendChild(winEl);
+            });
+        }
+
+        /* ==========================================================================
+           9. BUILT-IN APPLICATIONS
+           ========================================================================== */
+
+        /* 1. FILE EXPLORER APP */
+        function renderExplorerApp(container, win) {
+            let currentFolderId = win.meta?.folderId || 'root';
+
+            function renderDir() {
+                container.innerHTML = `
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="navigateFolder('root')" class="px-3 py-1.5 rounded-lg bg-night-900 hover:bg-night-800 text-xs text-slate-200 border border-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-house text-neon-blue"></i> Kök Dizin</button>
+                            <span class="text-slate-600">/</span>
+                            <span class="text-xs font-semibold text-neon-blue">${getFolderPathName(currentFolderId)}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="createNewItemPrompt('${currentFolderId}', 'folder')" class="px-3 py-1.5 rounded-lg bg-neon-blue/10 hover:bg-neon-blue/20 text-xs text-neon-blue border border-neon-blue/30 flex items-center gap-1.5"><i class="fa-solid fa-folder-plus"></i> Yeni Klasör</button>
+                            <button onclick="createNewItemPrompt('${currentFolderId}', 'file')" class="px-3 py-1.5 rounded-lg bg-neon-blue/10 hover:bg-neon-blue/20 text-xs text-neon-blue border border-neon-blue/30 flex items-center gap-1.5"><i class="fa-solid fa-file-circle-plus"></i> Yeni Not</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 flex-1 overflow-auto content-start">
+                        ${renderFolderContents(currentFolderId)}
+                    </div>
+                `;
+            }
+
+            window.navigateFolder = (fId) => {
+                currentFolderId = fId;
+                renderDir();
+            };
+
+            window.renderFolderContents = (fId) => {
+                const items = state.files.filter(f => f.parent === fId);
+                if(items.length === 0) {
+                    return `<div class="col-span-4 py-16 text-center text-slate-500 text-xs"><i class="fa-solid fa-folder-open text-3xl mb-2 block opacity-40"></i>Bu klasör boş.</div>`;
+                }
+                return items.map(item => `
+                    <div ondblclick="${item.type === 'folder' ? `navigateFolder('${item.id}')` : `openApp('notepad', {fileId: '${item.id}'})`}" class="p-3 rounded-xl bg-night-900/60 hover:bg-night-800/80 border border-slate-800 flex flex-col items-center justify-center cursor-pointer group transition-all relative">
+                        <button onclick="event.stopPropagation(); deleteFileItem('${item.id}')" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 hidden group-hover:block"><i class="fa-solid fa-trash text-xs"></i></button>
+                        <i class="fa-solid ${item.type === 'folder' ? 'fa-folder text-amber-400' : 'fa-file-lines text-slate-300'} text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-xs font-medium text-slate-200 truncate w-full text-center">${item.name}</span>
+                    </div>
+                `).join('');
+            };
+
+            window.getFolderPathName = (fId) => {
+                if(fId === 'root') return 'Ana Masaüstü';
+                const f = state.files.find(x => x.id === fId);
+                return f ? f.name : 'Dizin';
+            };
+
+            window.createNewItemPrompt = (parentId, type) => {
+                showPrompt(type === 'folder' ? 'Yeni Klasör Adı' : 'Yeni Dosya Adı', type === 'folder' ? 'Klasör adı...' : 'dosya.txt', (val) => {
+                    if(!val) return;
+                    state.files.push({
+                        id: 'f_' + Date.now(),
+                        name: val,
+                        type: type,
+                        parent: parentId,
+                        content: type === 'file' ? '' : undefined
+                    });
+                    saveStorage();
+                    renderDir();
+                    renderDesktopIcons();
+                    addNotification('Dosya Yöneticisi', `${val} oluşturuldu.`, type === 'folder' ? 'fa-folder' : 'fa-file');
+                });
+            };
+
+            window.deleteFileItem = (id) => {
+                state.files = state.files.filter(f => f.id !== id && f.parent !== id);
+                saveStorage();
+                renderDir();
+                renderDesktopIcons();
+                addNotification('Dosya Yöneticisi', 'Öğe silindi.', 'fa-trash');
+            };
+
+            renderDir();
+        }
+
+        /* 2. NOTEPAD APP */
+        function renderNotepadApp(container, win) {
+            const fileId = win.meta?.fileId;
+            let currentFile = state.files.find(f => f.id === fileId) || { id: 'new', name: 'Yeni Not.txt', content: '' };
+
+            container.innerHTML = `
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-xs">
+                    <span id="notepad-filename" class="font-bold text-neon-blue"><i class="fa-solid fa-file-pen mr-1.5"></i>${currentFile.name}</span>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="saveCurrentNotepad()" class="px-3 py-1 rounded bg-neon-blue/20 hover:bg-neon-blue/30 text-neon-blue font-semibold transition-colors">Kaydet</button>
+                    </div>
+                </div>
+                <textarea id="notepad-textarea" class="w-full flex-1 bg-night-900/60 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 font-mono focus:outline-none focus:border-neon-blue resize-none">${currentFile.content || ''}</textarea>
+            `;
+
+            window.saveCurrentNotepad = () => {
+                const val = document.getElementById('notepad-textarea').value;
+                if(currentFile.id === 'new') {
+                    showPrompt('Dosyayı Kaydet', 'notlarim.txt', (fname) => {
+                        if(!fname) return;
+                        const newF = { id: 'f_' + Date.now(), name: fname, type: 'file', parent: 'root', content: val };
+                        state.files.push(newF);
+                        currentFile = newF;
+                        saveStorage();
+                        renderDesktopIcons();
+                        addNotification('Not Defteri', `${fname} kaydedildi.`, 'fa-floppy-disk');
+                    });
+                } else {
+                    currentFile.content = val;
+                    const f = state.files.find(x => x.id === currentFile.id);
+                    if(f) f.content = val;
+                    saveStorage();
+                    addNotification('Not Defteri', `${currentFile.name} güncellendi.`, 'fa-floppy-disk');
+                }
+            };
+        }
+
+        /* 3. TERMINAL APP */
+        function renderTerminalApp(container, win) {
+            container.className += ' scanlines font-mono text-xs';
+            container.innerHTML = `
+                <div id="terminal-output" class="flex-1 overflow-auto space-y-1 mb-2 text-slate-300">
+                    <div>NIGHT LANDSCAPE [Version 1.0.0-PRO]</div>
+                    <div>Tüm hakları saklıdır. Yardım için <span class="text-neon-blue font-bold">help</span> yazın.</div>
+                    <br>
+                </div>
+                <div class="flex items-center space-x-2 border-t border-slate-800 pt-2">
+                    <span class="text-neon-blue font-bold">gezgin@nightscape:~$</span>
+                    <input type="text" id="terminal-input" autofocus class="flex-1 bg-transparent text-white focus:outline-none font-mono">
+                </div>
+            `;
+
+            const output = document.getElementById('terminal-output');
+            const input = document.getElementById('terminal-input');
+
+            input.addEventListener('keydown', (e) => {
+                if(e.key === 'Enter') {
+                    const cmd = input.value.trim();
+                    if(!cmd) return;
+
+                    const cmdDiv = document.createElement('div');
+                    cmdDiv.innerHTML = `<span class="text-neon-blue">gezgin@nightscape:~$</span> ${escapeHTML(cmd)}`;
+                    output.appendChild(cmdDiv);
+
+                    handleCommand(cmd, output);
+                    input.value = '';
+                    output.scrollTop = output.scrollHeight;
+                }
+            });
+
+            function handleCommand(cmd, outContainer) {
+                const parts = cmd.split(' ');
+                const action = parts[0].toLowerCase();
+                const res = document.createElement('div');
+                res.className = 'text-slate-400';
+
+                switch(action) {
+                    case 'help':
+                        res.innerHTML = `Kullanılabilir Komutlar:<br>
+                        - <b>help</b>: Yardım menüsünü gösterir.<br>
+                        - <b>date</b>: Güncel tarihi gösterir.<br>
+                        - <b>time</b>: Güncel saati gösterir.<br>
+                        - <b>about</b>: Sistem hakkında bilgi verir.<br>
+                        - <b>version</b>: Sürüm bilgisini gösterir.<br>
+                        - <b>clear</b>: Terminal ekranını temizler.<br>
+                        - <b>ls</b>: Dosyaları listeler.<br>
+                        - <b>echo [metin]</b>: Metni ekrana yazdırır.`;
+                        break;
+                    case 'date':
+                        res.textContent = new Date().toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                        break;
+                    case 'time':
+                        res.textContent = new Date().toLocaleTimeString('tr-TR');
+                        break;
+                    case 'about':
+                        res.textContent = 'Night Landscape: Tarayıcı tabanlı, fütüristik gece temalı işletim sistemi simülasyonu.';
+                        break;
+                    case 'version':
+                        res.textContent = 'Night Landscape OS v1.0.0 (Build 2026.11)';
+                        break;
+                    case 'clear':
+                        outContainer.innerHTML = '';
+                        return;
+                    case 'ls':
+                        res.innerHTML = state.files.map(f => `${f.type === 'folder' ? '📁' : '📄'} ${f.name}`).join('<br>');
+                        break;
+                    case 'echo':
+                        res.textContent = parts.slice(1).join(' ');
+                        break;
+                    default:
+                        res.className = 'text-red-400';
+                        res.textContent = `Bilinmeyen komut: "${action}". Yardım için "help" yazın.`;
+                }
+                outContainer.appendChild(res);
+            }
+        }
+
+        /* 4. CALCULATOR APP */
+        function renderCalculatorApp(container, win) {
+            container.innerHTML = `
+                <div class="mb-3 bg-night-900 border border-slate-700 rounded-xl p-3 text-right">
+                    <div id="calc-display" class="text-2xl font-mono font-bold text-white tracking-wider truncate">0</div>
+                </div>
+                <div class="grid grid-cols-4 gap-2 flex-1">
+                    <button onclick="calcBtn('C')" class="p-3 rounded-xl bg-red-500/20 text-red-400 font-bold hover:bg-red-500/30">C</button>
+                    <button onclick="calcBtn('(')" class="p-3 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">(</button>
+                    <button onclick="calcBtn(')')" class="p-3 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">)</button>
+                    <button onclick="calcBtn('/')" class="p-3 rounded-xl bg-neon-blue/20 text-neon-blue font-bold hover:bg-neon-blue/30">÷</button>
+                    
+                    <button onclick="calcBtn('7')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">7</button>
+                    <button onclick="calcBtn('8')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">8</button>
+                    <button onclick="calcBtn('9')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">9</button>
+                    <button onclick="calcBtn('*')" class="p-3 rounded-xl bg-neon-blue/20 text-neon-blue font-bold hover:bg-neon-blue/30">×</button>
+                    
+                    <button onclick="calcBtn('4')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">4</button>
+                    <button onclick="calcBtn('5')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">5</button>
+                    <button onclick="calcBtn('6')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">6</button>
+                    <button onclick="calcBtn('-')" class="p-3 rounded-xl bg-neon-blue/20 text-neon-blue font-bold hover:bg-neon-blue/30">-</button>
+                    
+                    <button onclick="calcBtn('1')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">1</button>
+                    <button onclick="calcBtn('2')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">2</button>
+                    <button onclick="calcBtn('3')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">3</button>
+                    <button onclick="calcBtn('+')" class="p-3 rounded-xl bg-neon-blue/20 text-neon-blue font-bold hover:bg-neon-blue/30">+</button>
+                    
+                    <button onclick="calcBtn('0')" class="col-span-2 p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">0</button>
+                    <button onclick="calcBtn('.')" class="p-3 rounded-xl bg-night-900 text-white font-bold hover:bg-slate-800">.</button>
+                    <button onclick="calcBtn('=')" class="p-3 rounded-xl bg-gradient-to-r from-neon-blue to-neon-purple text-night-950 font-bold hover:brightness-110">=</button>
+                </div>
+            `;
+
+            let expr = '0';
+            window.calcBtn = (val) => {
+                const display = document.getElementById('calc-display');
+                if(val === 'C') {
+                    expr = '0';
+                } else if(val === '=') {
+                    try {
+                        expr = String(eval(expr.replace(/×/g, '*').replace(/÷/g, '/')));
+                    } catch(e) {
+                        expr = 'Hata';
+                    }
+                } else {
+                    if(expr === '0' || expr === 'Hata') expr = val;
+                    else expr += val;
+                }
+                display.textContent = expr;
+            };
+        }
+
+        /* 5. MUSIC PLAYER APP */
+        function renderMusicApp(container, win) {
+            container.innerHTML = `
+                <div class="flex items-center space-x-4 mb-4 pb-4 border-b border-slate-800">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-pink-500/20 to-neon-purple/20 border border-pink-500/40 flex items-center justify-center text-pink-400 text-2xl shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                        <i class="fa-solid fa-compact-disc animate-spin" style="animation-duration: 6s;"></i>
+                    </div>
+                    <div>
+                        <h4 id="music-title" class="font-bold text-white text-sm">${state.audioPlayer.playlist[0].title}</h4>
+                        <p id="music-artist" class="text-xs text-slate-400">${state.audioPlayer.playlist[0].artist}</p>
+                    </div>
+                </div>
+                <div class="space-y-3 mb-6">
+                    <div class="flex justify-between text-xs text-slate-400 font-mono">
+                        <span id="music-current">0:00</span>
+                        <span id="music-dur">${state.audioPlayer.playlist[0].duration}</span>
+                    </div>
+                    <div class="w-full bg-night-900 h-1.5 rounded-full overflow-hidden">
+                        <div id="music-progress" class="bg-gradient-to-r from-pink-500 to-neon-blue w-0 h-full"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center space-x-6 mb-6">
+                    <button class="text-slate-400 hover:text-white transition-colors"><i class="fa-solid fa-backward-step text-lg"></i></button>
+                    <button onclick="togglePlayMusic()" id="music-play-btn" class="w-12 h-12 rounded-full bg-pink-500 text-night-950 font-bold flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.5)] hover:scale-105 transition-transform"><i class="fa-solid fa-play text-lg ml-0.5"></i></button>
+                    <button class="text-slate-400 hover:text-white transition-colors"><i class="fa-solid fa-forward-step text-lg"></i></button>
+                </div>
+                <div class="flex-1 overflow-auto space-y-1">
+                    <span class="text-[10px] uppercase font-bold text-slate-500 block mb-2">Çalma Listesi</span>
+                    ${state.audioPlayer.playlist.map((tr, idx) => `
+                        <div onclick="selectTrack(${idx})" class="p-2.5 rounded-xl bg-night-900/60 hover:bg-night-800 flex items-center justify-between cursor-pointer transition-colors">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-solid fa-music text-xs text-pink-400"></i>
+                                <div>
+                                    <div class="text-xs font-semibold text-white">${tr.title}</div>
+                                    <div class="text-[10px] text-slate-400">${tr.artist}</div>
+                                </div>
+                            </div>
+                            <span class="text-xs text-slate-500 font-mono">${tr.duration}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            let audioEl = window._globalAudio || new Audio(state.audioPlayer.playlist[0].url);
+            window._globalAudio = audioEl;
+
+            window.togglePlayMusic = () => {
+                const btn = document.getElementById('music-play-btn');
+                if(audioEl.paused) {
+                    audioEl.play().catch(e => console.log('Audio autoplay blocked'));
+                    btn.innerHTML = '<i class="fa-solid fa-pause text-lg"></i>';
+                } else {
+                    audioEl.pause();
+                    btn.innerHTML = '<i class="fa-solid fa-play text-lg ml-0.5"></i>';
+                }
+            };
+
+            window.selectTrack = (idx) => {
+                const tr = state.audioPlayer.playlist[idx];
+                document.getElementById('music-title').textContent = tr.title;
+                document.getElementById('music-artist').textContent = tr.artist;
+                document.getElementById('music-dur').textContent = tr.duration;
+                audioEl.src = tr.url;
+                audioEl.play();
+                document.getElementById('music-play-btn').innerHTML = '<i class="fa-solid fa-pause text-lg"></i>';
+            };
+        }
+
+        /* 6. BROWSER APP */
+        function renderBrowserApp(container, win) {
+            container.innerHTML = `
+                <div class="flex items-center space-x-2 pb-3 mb-3 border-b border-slate-800">
+                    <button class="w-7 h-7 rounded-lg bg-night-900 hover:bg-slate-800 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                    <button class="w-7 h-7 rounded-lg bg-night-900 hover:bg-slate-800 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-arrow-right text-xs"></i></button>
+                    <button class="w-7 h-7 rounded-lg bg-night-900 hover:bg-slate-800 text-slate-400 flex items-center justify-center"><i class="fa-solid fa-rotate text-xs"></i></button>
+                    <div class="flex-1 bg-night-900 border border-slate-700 rounded-xl px-3 py-1.5 flex items-center space-x-2">
+                        <i class="fa-solid fa-lock text-emerald-400 text-xs"></i>
+                        <input type="text" id="browser-url" value="https://nightscape.web.app" class="w-full bg-transparent text-xs text-white focus:outline-none font-mono">
+                    </div>
+                </div>
+                <div id="browser-content" class="flex-1 bg-night-900/60 rounded-xl border border-slate-800 p-6 overflow-auto flex flex-col items-center justify-center text-center">
+                    <div class="w-16 h-16 rounded-3xl bg-neon-blue/10 border border-neon-blue flex items-center justify-center text-neon-blue text-2xl mb-4 shadow-[0_0_20px_rgba(0,240,255,0.2)]">
+                        <i class="fa-solid fa-compass"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Nightscape Tarayıcı</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mb-6">A New World Beyond Your Screen. İnternet dünyasına hoş geldiniz.</p>
+                    <div class="grid grid-cols-2 gap-3 w-full max-w-md">
+                        <div onclick="alertBrowser('GitHub', 'https://github.com')" class="p-3 rounded-xl bg-night-900 border border-slate-800 hover:border-neon-blue cursor-pointer transition-all flex items-center space-x-3">
+                            <i class="fa-brands fa-github text-xl text-white"></i>
+                            <span class="text-xs font-semibold text-white">GitHub</span>
+                        </div>
+                        <div onclick="alertBrowser('Google', 'https://google.com')" class="p-3 rounded-xl bg-night-900 border border-slate-800 hover:border-neon-blue cursor-pointer transition-all flex items-center space-x-3">
+                            <i class="fa-brands fa-google text-xl text-neon-blue"></i>
+                            <span class="text-xs font-semibold text-white">Google</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            window.alertBrowser = (name, url) => {
+                document.getElementById('browser-url').value = url;
+                document.getElementById('browser-content').innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-globe text-4xl text-neon-blue mb-3 animate-spin" style="animation-duration: 10s;"></i>
+                        <h4 class="text-lg font-bold text-white mb-1">${name} Simülasyonu</h4>
+                        <p class="text-xs text-slate-400">${url} başarıyla yüklendi (İçerik simüle edilmiştir).</p>
+                    </div>
+                `;
+            };
+        }
+
+        /* 7. CALENDAR APP */
+        function renderCalendarApp(container, win) {
+            const now = new Date();
+            container.innerHTML = `
+                <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                    <h3 class="font-bold text-sm text-white">${now.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })}</h3>
+                    <div class="flex items-center space-x-1">
+                        <button class="w-7 h-7 rounded bg-night-900 text-slate-400 hover:text-white"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button class="w-7 h-7 rounded bg-night-900 text-slate-400 hover:text-white"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-500 mb-2">
+                    <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs">
+                    ${Array.from({length: 31}, (_, i) => {
+                        const day = i + 1;
+                        const isToday = day === now.getDate();
+                        return `<div class="p-2.5 rounded-xl ${isToday ? 'bg-neon-blue text-night-950 font-bold shadow-[0_0_10px_rgba(0,240,255,0.5)]' : 'bg-night-900/60 text-slate-300 hover:bg-slate-800'}">${day}</div>`;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        /* 8. SETTINGS APP */
+        function renderSettingsApp(container, win) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Masaüstü Duvar Kâğıdı</h4>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div onclick="changeWallpaper('bg-wallpaper-1')" class="h-20 rounded-xl bg-wallpaper-1 bg-cover cursor-pointer border-2 ${state.settings.wallpaper === 'bg-wallpaper-1' ? 'border-neon-blue shadow-[0_0_15px_rgba(0,240,255,0.4)]' : 'border-slate-800'} flex items-end p-2"><span class="text-[10px] font-bold bg-night-950/80 px-2 py-0.5 rounded text-white">Gece Moru</span></div>
+                            <div onclick="changeWallpaper('bg-wallpaper-2')" class="h-20 rounded-xl bg-wallpaper-2 bg-cover cursor-pointer border-2 ${state.settings.wallpaper === 'bg-wallpaper-2' ? 'border-neon-blue shadow-[0_0_15px_rgba(0,240,255,0.4)]' : 'border-slate-800'} flex items-end p-2"><span class="text-[10px] font-bold bg-night-950/80 px-2 py-0.5 rounded text-white">Koyu Okyanus</span></div>
+                            <div onclick="changeWallpaper('bg-wallpaper-3')" class="h-20 rounded-xl bg-wallpaper-3 bg-cover cursor-pointer border-2 ${state.settings.wallpaper === 'bg-wallpaper-3' ? 'border-neon-blue shadow-[0_0_15px_rgba(0,240,255,0.4)]' : 'border-slate-800'} flex items-end p-2"><span class="text-[10px] font-bold bg-night-950/80 px-2 py-0.5 rounded text-white">Siber Siyah</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ses Düzeyi</h4>
+                        <div class="flex items-center space-x-4">
+                            <i class="fa-solid fa-volume-high text-neon-blue"></i>
+                            <input type="range" min="0" max="100" value="${state.settings.volume}" onchange="changeVolume(this.value)" class="flex-1 accent-neon-blue">
+                            <span class="text-xs font-mono text-slate-300">${state.settings.volume}%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Veri Yönetimi</h4>
+                        <button onclick="resetSystemData()" class="px-4 py-2 rounded-xl bg-red-500/20 text-red-400 text-xs font-bold hover:bg-red-500/30 transition-colors">Tüm Verileri Sıfırla (LocalStorage)</button>
+                    </div>
+                </div>
+            `;
+
+            window.changeWallpaper = (wp) => {
+                state.settings.wallpaper = wp;
+                applySettings();
+                saveStorage();
+                renderSettingsApp(container, win);
+                addNotification('Ayarlar', 'Duvar kâğıdı güncellendi.', 'fa-palette');
+            };
+
+            window.changeVolume = (vol) => {
+                state.settings.volume = vol;
+                saveStorage();
+            };
+
+            window.resetSystemData = () => {
+                localStorage.clear();
+                location.reload();
+            };
+        }
+
+        function applySettings() {
+            const desktop = document.getElementById('desktop');
+            const lockScreen = document.getElementById('lock-screen');
+            if(desktop) {
+                desktop.className = `absolute inset-0 ${state.settings.wallpaper} bg-cover bg-center overflow-hidden flex flex-col justify-between`;
+            }
+            if(lockScreen) {
+                lockScreen.className = `fixed inset-0 z-40 ${state.settings.wallpaper} bg-cover bg-center flex flex-col items-center justify-between py-16 px-4 transition-all duration-500`;
+            }
+        }
+
+        /* 9. SYSTEM INFO APP */
+        function renderSystemApp(container, win) {
+            const ua = navigator.userAgent;
+            const res = `${window.screen.width}x${window.screen.height}`;
+            const online = navigator.onLine ? 'Çevrimiçi (Online)' : 'Çevrimdışı (Offline)';
+
+            container.innerHTML = `
+                <div class="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-800">
+                    <div class="w-16 h-16 rounded-2xl bg-neon-blue/10 border border-neon-blue flex items-center justify-center text-neon-blue text-3xl shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                        <i class="fa-solid fa-moon"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base">Night Landscape OS</h3>
+                        <p class="text-xs text-neon-blue">Sürüm 1.0.0-PRO (Fütüristik Web İşletim Sistemi)</p>
+                    </div>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <div class="flex justify-between p-2.5 rounded-xl bg-night-900/60 border border-slate-800">
+                        <span class="text-slate-400">Tarayıcı Bilgisi</span>
+                        <span class="text-white font-mono truncate max-w-[250px]">${ua}</span>
+                    </div>
+                    <div class="flex justify-between p-2.5 rounded-xl bg-night-900/60 border border-slate-800">
+                        <span class="text-slate-400">Ekran Çözünürlüğü</span>
+                        <span class="text-white font-mono">${res}</span>
+                    </div>
+                    <div class="flex justify-between p-2.5 rounded-xl bg-night-900/60 border border-slate-800">
+                        <span class="text-slate-400">Ağ Bağlantısı</span>
+                        <span class="text-emerald-400 font-mono">${online}</span>
+                    </div>
+                    <div class="flex justify-between p-2.5 rounded-xl bg-night-900/60 border border-slate-800">
+                        <span class="text-slate-400">Bellek / Depolama</span>
+                        <span class="text-white font-mono">LocalStorage Aktif</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==========================================================================
+           10. CUSTOM MODAL / PROMPT DIALOG ENGINE
+           ========================================================================== */
+        function showModal(title, message, buttons) {
+            const modal = document.getElementById('modal-dialog');
+            document.getElementById('modal-title').querySelector('span').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal-input-container').classList.add('hidden');
+
+            const btnContainer = document.getElementById('modal-buttons');
+            btnContainer.innerHTML = buttons.map(b => `<button onclick="${b.onclick}" class="px-4 py-2 rounded-xl text-xs transition-colors ${b.class}">${b.text}</button>`).join('');
+            modal.classList.remove('hidden');
+        }
+
+        function showPrompt(title, placeholder, callback) {
+            const modal = document.getElementById('modal-dialog');
+            document.getElementById('modal-title').querySelector('span').textContent = title;
+            document.getElementById('modal-message').textContent = '';
+            
+            const inputContainer = document.getElementById('modal-input-container');
+            inputContainer.classList.remove('hidden');
+            const input = document.getElementById('modal-input');
+            input.value = placeholder;
+
+            const btnContainer = document.getElementById('modal-buttons');
+            btnContainer.innerHTML = `
+                <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-700 hover:bg-slate-600 text-white">İptal</button>
+                <button onclick="submitPrompt(${callback})" class="px-4 py-2 rounded-xl text-xs bg-gradient-to-r from-neon-blue to-neon-purple text-night-950 font-bold hover:brightness-110">Oluştur</button>
+            `;
+            modal.classList.remove('hidden');
+            input.focus();
+        }
+
+        function submitPrompt(cb) {
+            const val = document.getElementById('modal-input').value;
+            closeModal();
+            if(cb) cb(val);
+        }
+
+        function closeModal() {
+            document.getElementById('modal-dialog').classList.add('hidden');
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
